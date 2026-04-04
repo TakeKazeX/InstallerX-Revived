@@ -37,6 +37,8 @@ class ThemeStateProvider(private val appSettingsRepo: AppSettingsRepository) {
         appSettingsRepo.getBoolean(BooleanSetting.ThemeUseDynamicColor, true),
         appSettingsRepo.getBoolean(BooleanSetting.UiUseMiuixMonet, false),
         appSettingsRepo.getBoolean(BooleanSetting.UiUseAppleFloatingBar, false),
+        appSettingsRepo.getBoolean(BooleanSetting.UiAboutUseMiuix, false),
+        appSettingsRepo.getBoolean(BooleanSetting.UiInstallUseMiuix, false),
         appSettingsRepo.getInt(IntSetting.ThemeSeedColor, PresetColors.first().color.toArgb())
             .map { Color(it) },
         appSettingsRepo.getBoolean(BooleanSetting.UiUseBlur, Build.VERSION.SDK_INT >= Build.VERSION_CODES.S),
@@ -51,6 +53,8 @@ class ThemeStateProvider(private val appSettingsRepo: AppSettingsRepository) {
         val useDynamic = values[idx++] as Boolean
         val useMonet = values[idx++] as Boolean
         val useAppleFloatingBar = values[idx++] as Boolean
+        val useAboutMiuix = values[idx++] as Boolean
+        val useInstallMiuix = values[idx++] as Boolean
         val manualSeedColor = values[idx++] as Color
         val useBlur = values[idx++] as Boolean
         @Suppress("UNCHECKED_CAST") val wallpaperColors = values[idx] as? List<Int>
@@ -70,6 +74,8 @@ class ThemeStateProvider(private val appSettingsRepo: AppSettingsRepository) {
             useDynamicColor = useDynamic,
             useMiuixMonet = useMonet,
             useAppleFloatingBar = useAppleFloatingBar,
+            useAboutMiuix = useAboutMiuix,
+            useInstallMiuix = useInstallMiuix,
             seedColor = effectiveSeedColor,
             useBlur = useBlur
         )

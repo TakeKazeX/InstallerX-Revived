@@ -106,6 +106,7 @@ object AppIcons {
     val History = Icons.TwoTone.History
     val License = Icons.TwoTone.LocalPolice
     val Lab = Icons.TwoTone.Science
+    val Apple = Icons.TwoTone.DynamicFeed // Using DynamicFeed as a placeholder for Apple/Floating Bar
     val Suggestion = Icons.TwoTone.AutoAwesome
     val Tip = Icons.Filled.Lightbulb
     val Update = Icons.TwoTone.SystemUpdate

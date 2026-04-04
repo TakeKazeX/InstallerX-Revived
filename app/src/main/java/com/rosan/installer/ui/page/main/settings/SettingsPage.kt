@@ -36,6 +36,8 @@ import com.rosan.installer.ui.page.main.settings.preferred.subpage.theme.LegacyT
 import com.rosan.installer.ui.page.main.settings.preferred.subpage.theme.NewThemeSettingsPage
 import com.rosan.installer.ui.page.main.settings.preferred.subpage.uninstaller.LegacyUninstallerGlobalSettingsPage
 import com.rosan.installer.ui.page.main.settings.preferred.subpage.uninstaller.NewUninstallerGlobalSettingsPage
+import com.rosan.installer.ui.page.miuix.settings.preferred.subpage.about.MiuixAboutPage
+import com.rosan.installer.ui.page.miuix.settings.preferred.subpage.about.MiuixBlendAboutPage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -156,7 +158,12 @@ fun SettingsPage(
                 scaleOut(targetScale = 0.9f) + fadeOut()
             }
         ) {
-            if (isExpressive)
+            if (uiState.useAboutMiuix) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.BAKLAVA)
+                    MiuixBlendAboutPage(navController = navController)
+                else
+                    MiuixAboutPage(navController = navController)
+            } else if (isExpressive)
                 NewAboutPage(navController = navController)
             else
                 AboutPage(navController = navController)

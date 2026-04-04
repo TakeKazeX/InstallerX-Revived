@@ -66,6 +66,7 @@ import com.rosan.installer.R
 import com.rosan.installer.domain.settings.model.ThemeState
 import com.rosan.installer.ui.icons.AppIcons
 import com.rosan.installer.ui.page.main.settings.SettingsSharedViewModel
+import com.rosan.installer.ui.page.main.settings.preferred.subpage.about.NewAboutPage
 import com.rosan.installer.ui.page.miuix.settings.config.all.MiuixAllPage
 import com.rosan.installer.ui.page.miuix.settings.config.apply.MiuixApplyPage
 import com.rosan.installer.ui.page.miuix.settings.config.edit.MiuixEditPage
@@ -246,9 +247,13 @@ fun MiuixSettingsPage(
             )
         }
         composable(route = MiuixSettingsScreen.MiuixAbout.route) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA)
-                MiuixBlendAboutPage(navController = navController)
-            else MiuixAboutPage(navController = navController)
+            if (uiState.useAboutMiuix) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA)
+                    MiuixBlendAboutPage(navController = navController)
+                else MiuixAboutPage(navController = navController)
+            } else {
+                NewAboutPage(navController = navController)
+            }
         }
         composable(route = MiuixSettingsScreen.MiuixOpenSourceLicense.route) {
             MiuixOpenSourceLicensePage(navController = navController)
@@ -291,7 +296,7 @@ private fun SettingsFloatingBottomBar(
                     onClick = {},
                 )
                 .padding(bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
-            selectedIndex = { pagerState.currentPage },
+            selectedIndex = { pagerState.targetPage },
             onSelected = { index ->
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(index)

@@ -181,6 +181,7 @@ fun FloatingBottomBar(
             onDragStopped = {
                 val targetIndex = targetValue.fastRoundToInt().fastCoerceIn(0, tabsCount - 1)
                 currentIndex = targetIndex
+                onSelected(targetIndex)
                 animateToValue(targetIndex.toFloat())
                 animationScope.launch {
                     offsetAnimation.animateTo(0f, spring(1f, 300f, 0.5f))
@@ -201,12 +202,11 @@ fun FloatingBottomBar(
     }
 
     LaunchedEffect(selectedIndex) {
-        snapshotFlow { selectedIndex() }.collectLatest { currentIndex = it }
-    }
-    LaunchedEffect(dampedDragAnimation) {
-        snapshotFlow { currentIndex }.drop(1).collectLatest { index ->
-            dampedDragAnimation.animateToValue(index.toFloat())
-            onSelected(index)
+        snapshotFlow { selectedIndex() }.collectLatest { index ->
+            if (currentIndex != index) {
+                currentIndex = index
+                dampedDragAnimation.animateToValue(index.toFloat())
+            }
         }
     }
 

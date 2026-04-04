@@ -20,6 +20,8 @@ data class ThemeSettingsState(
     val useDynamicColor: Boolean = true,
     val useMiuixMonet: Boolean = false,
     val useAppleFloatingBar: Boolean = false,
+    val useAboutMiuix: Boolean = false,
+    val useInstallMiuix: Boolean = false,
     val seedColor: Color = PresetColors[0].color,
     val availableColors: List<RawColor> = PresetColors,
     val useDynColorFollowPkgIcon: Boolean = false,

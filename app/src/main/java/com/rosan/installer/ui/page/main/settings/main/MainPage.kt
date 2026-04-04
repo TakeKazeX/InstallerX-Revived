@@ -2,24 +2,32 @@
 // Copyright (C) 2023-2026 iamr0s, InstallerX Revived contributors
 package com.rosan.installer.ui.page.main.settings.main
 
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -48,14 +56,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.kyant.backdrop.backdrops.LayerBackdrop
+import com.kyant.backdrop.backdrops.layerBackdrop
+import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.rosan.installer.R
 import com.rosan.installer.domain.settings.model.ThemeState
 import com.rosan.installer.domain.settings.provider.ThemeStateProvider
@@ -66,6 +80,8 @@ import com.rosan.installer.ui.page.main.settings.config.all.AllPage
 import com.rosan.installer.ui.page.main.settings.config.all.NewAllPage
 import com.rosan.installer.ui.page.main.settings.preferred.NewPreferredPage
 import com.rosan.installer.ui.page.main.settings.preferred.PreferredPage
+import com.rosan.installer.ui.page.miuix.widgets.FloatingBottomBar
+import com.rosan.installer.ui.page.miuix.widgets.FloatingBottomBarItem
 import com.rosan.installer.ui.theme.installerHazeEffect
 import com.rosan.installer.ui.theme.rememberMaterial3HazeStyle
 import dev.chrisbanes.haze.HazeState
@@ -86,6 +102,8 @@ fun MainPage(
     val sharedState by sharedViewModel.state.collectAsStateWithLifecycle()
     val showExpressiveUI = uiState.isExpressive
     val useBlur = showExpressiveUI && uiState.useBlur
+    val useFloatingBottomBar = uiState.useAppleFloatingBar
+    val useFloatingBottomBarBlur = useBlur && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
     val hazeState = if (useBlur) remember { HazeState() } else null
 
     val configRepo = koinInject<ConfigRepository>()
@@ -93,6 +111,12 @@ fun MainPage(
     val configCount by configCountFlow.collectAsStateWithLifecycle(initialValue = 0)
     val configLabel = stringResource(R.string.config)
     val preferredLabel = stringResource(R.string.preferred)
+
+    val surfaceColor = MaterialTheme.colorScheme.surface
+    val backdrop = rememberLayerBackdrop {
+        drawRect(surfaceColor)
+        drawContent()
+    }
 
     val data = remember(showExpressiveUI, configLabel, preferredLabel, navController) {
         arrayOf(
@@ -133,10 +157,10 @@ fun MainPage(
         modifier = Modifier.fillMaxSize()
     ) {
         // Expanded layout: >= 840dp OR medium devices in landscape (like foldables)
-        val showRail = maxWidth >= 840.dp || (maxWidth >= 600.dp && maxWidth > maxHeight)
+        val showRail = (maxWidth >= 840.dp || (maxWidth >= 600.dp && maxWidth > maxHeight)) && !useFloatingBottomBar
 
         // Medium layout: >= 600dp but in portrait mode (like foldables in portrait or small tablets)
-        val isMedium = maxWidth >= 600.dp && !showRail
+        val isMedium = maxWidth >= 600.dp && (maxWidth <= maxHeight || useFloatingBottomBar)
 
         val navigationSide =
             if (showRail) WindowInsetsSides.Start
@@ -153,23 +177,34 @@ fun MainPage(
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 bottomBar = {
-                    RowNavigation(
-                        modifier = Modifier.installerHazeEffect(hazeState, hazeStyle),
-                        isM3e = showExpressiveUI,
-                        windowInsets = navigationWindowInsets,
-                        data = data,
-                        currentPage = currentPage,
-                        onPageChanged = { onPageChanged(it) },
-                        configCount = configCount,
-                        containerColor = if (useBlur) Color.Transparent else BottomAppBarDefaults.containerColor,
-                        isMedium = isMedium // Pass layout state
-                    )
+                    if (useFloatingBottomBar) {
+                        SettingsFloatingBottomBar(
+                            data = data,
+                            pagerState = pagerState,
+                            useFloatingBottomBarBlur = useFloatingBottomBarBlur,
+                            backdrop = backdrop
+                        )
+                    } else {
+                        RowNavigation(
+                            modifier = Modifier.installerHazeEffect(hazeState, hazeStyle),
+                            isM3e = showExpressiveUI,
+                            windowInsets = navigationWindowInsets,
+                            data = data,
+                            currentPage = currentPage,
+                            onPageChanged = { onPageChanged(it) },
+                            configCount = configCount,
+                            containerColor = if (useBlur) Color.Transparent else BottomAppBarDefaults.containerColor,
+                            isMedium = isMedium // Pass layout state
+                        )
+                    }
                 }
             ) { paddingValues ->
                 HorizontalPager(
                     state = pagerState,
                     userScrollEnabled = true,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .then(if (useFloatingBottomBar) Modifier.layerBackdrop(backdrop) else Modifier)
                 ) { page ->
                     data[page].content(paddingValues, if (showExpressiveUI) hazeState else null)
                 }
@@ -192,6 +227,68 @@ fun MainPage(
                         .fillMaxSize()
                 ) { page ->
                     data[page].content(PaddingValues(0.dp), if (showExpressiveUI) hazeState else null)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Reusable Floating Bottom Bar for M3E
+ */
+@Composable
+private fun SettingsFloatingBottomBar(
+    data: Array<NavigationData>,
+    pagerState: PagerState,
+    useFloatingBottomBarBlur: Boolean,
+    backdrop: LayerBackdrop
+) {
+    val scope = rememberCoroutineScope()
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        FloatingBottomBar(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {},
+                )
+                .padding(bottom = 12.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
+            selectedIndex = { pagerState.targetPage },
+            onSelected = { index ->
+                scope.launch {
+                    pagerState.animateScrollToPage(index)
+                }
+            },
+            backdrop = backdrop,
+            tabsCount = data.size,
+            isBlurEnabled = useFloatingBottomBarBlur
+        ) {
+            data.forEachIndexed { index, navigationData ->
+                FloatingBottomBarItem(
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    modifier = Modifier.defaultMinSize(minWidth = 76.dp)
+                ) {
+                    Icon(
+                        imageVector = navigationData.icon,
+                        contentDescription = navigationData.label,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = navigationData.label,
+                        fontSize = 11.sp,
+                        lineHeight = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Visible
+                    )
                 }
             }
         }

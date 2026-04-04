@@ -34,6 +34,8 @@ enum class BooleanSetting {
     UiUseMiuix,
     UiUseMiuixMonet,
     UiUseAppleFloatingBar,
+    UiAboutUseMiuix,
+    UiInstallUseMiuix,
     UiDynColorFollowPkgIcon,
     LiveActivityDynColorFollowPkgIcon,
     ShowLiveActivity,

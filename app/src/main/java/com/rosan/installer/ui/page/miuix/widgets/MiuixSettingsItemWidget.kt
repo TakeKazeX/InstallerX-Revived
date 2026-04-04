@@ -383,6 +383,7 @@ fun MiuixNavigationItemWidget(
 @Composable
 fun MiuixThemeEngineWidget(
     modifier: Modifier = Modifier,
+    label: String = stringResource(id = R.string.theme_settings_ui_engine),
     currentThemeIsMiuix: Boolean,
     onThemeChange: (Boolean) -> Unit,
 ) {
@@ -413,7 +414,7 @@ fun MiuixThemeEngineWidget(
 
     WindowSpinnerPreference(
         modifier = modifier,
-        title = stringResource(id = R.string.theme_settings_ui_engine),
+        title = label,
         // summary = spinnerEntries[selectedIndex].title,
         items = spinnerEntries,
         selectedIndex = selectedIndex,

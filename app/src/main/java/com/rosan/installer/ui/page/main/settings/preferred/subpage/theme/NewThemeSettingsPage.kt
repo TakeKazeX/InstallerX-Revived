@@ -42,6 +42,8 @@ import androidx.compose.material.icons.automirrored.twotone.ArrowBack
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.twotone.Colorize
+import androidx.compose.material.icons.twotone.Info
+import androidx.compose.material.icons.twotone.InstallMobile
 import androidx.compose.material.icons.twotone.InvertColors
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -78,6 +80,7 @@ import com.rosan.installer.ui.page.main.widget.dialog.HideLauncherIconWarningDia
 import com.rosan.installer.ui.page.main.widget.setting.AppBackButton
 import com.rosan.installer.ui.page.main.widget.setting.BaseWidget
 import com.rosan.installer.ui.page.main.widget.setting.ColorSpecSelector
+import com.rosan.installer.ui.page.main.widget.setting.DropDownMenuWidget
 import com.rosan.installer.ui.page.main.widget.setting.SelectableSettingItem
 import com.rosan.installer.ui.page.main.widget.setting.SplicedColumnGroup
 import com.rosan.installer.ui.page.main.widget.setting.SwitchWidget
@@ -229,6 +232,47 @@ fun NewThemeSettingsPage(
                                     sharedViewModel.markPendingNavigateToTheme(true)
                                     viewModel.dispatch(ThemeSettingsAction.ChangeUseMiuix(true))
                                 }
+                            }
+                        )
+                    }
+                    item {
+                        SwitchWidget(
+                            icon = AppIcons.Apple,
+                            title = stringResource(R.string.theme_settings_use_apple_floating_bar),
+                            description = stringResource(R.string.theme_settings_use_apple_floating_bar_desc),
+                            checked = uiState.useAppleFloatingBar,
+                            onCheckedChange = { viewModel.dispatch(ThemeSettingsAction.SetUseAppleFloatingBar(it)) }
+                        )
+                    }
+                    item {
+                        val data = listOf(
+                            stringResource(R.string.theme_settings_google_ui),
+                            stringResource(R.string.theme_settings_miuix_ui)
+                        )
+                        DropDownMenuWidget(
+                            icon = Icons.TwoTone.Info,
+                            title = stringResource(R.string.theme_settings_about_style),
+                            description = data[if (uiState.useAboutMiuix) 1 else 0],
+                            choice = if (uiState.useAboutMiuix) 1 else 0,
+                            data = data,
+                            onChoiceChange = { choice ->
+                                viewModel.dispatch(ThemeSettingsAction.SetUseAboutMiuix(choice == 1))
+                            }
+                        )
+                    }
+                    item {
+                        val data = listOf(
+                            stringResource(R.string.theme_settings_google_ui),
+                            stringResource(R.string.theme_settings_miuix_ui)
+                        )
+                        DropDownMenuWidget(
+                            icon = Icons.TwoTone.InstallMobile,
+                            title = stringResource(R.string.theme_settings_install_style),
+                            description = data[if (uiState.useInstallMiuix) 1 else 0],
+                            choice = if (uiState.useInstallMiuix) 1 else 0,
+                            data = data,
+                            onChoiceChange = { choice ->
+                                viewModel.dispatch(ThemeSettingsAction.SetUseInstallMiuix(choice == 1))
                             }
                         )
                     }
@@ -387,7 +431,7 @@ fun NewThemeSettingsPage(
                 }
             }
 
-            // --- Group 4: Package Icons ---
+            // --- Group 5: Package Icons ---
             item {
                 SplicedColumnGroup(
                     title = stringResource(R.string.theme_settings_package_icons)
@@ -404,7 +448,7 @@ fun NewThemeSettingsPage(
                 }
             }
 
-            // --- Group 5: Launcher Icons ---
+            // --- Group 6: Launcher Icons ---
             item {
                 SplicedColumnGroup(
                     title = stringResource(R.string.theme_settings_launcher_icons)

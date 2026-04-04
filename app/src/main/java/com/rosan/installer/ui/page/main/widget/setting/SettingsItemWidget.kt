@@ -471,7 +471,11 @@ fun SelectableSettingItem(
 }
 
 @Composable
-fun ColorSpecSelector(viewModel: ThemeSettingsViewModel) {
+fun ColorSpecSelector(
+    viewModel: ThemeSettingsViewModel,
+    icon: ImageVector = Icons.TwoTone.DesignServices,
+    title: String = stringResource(id = R.string.theme_settings_color_spec)
+) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     // Check if the current PaletteStyle supports SPEC_2025
@@ -500,8 +504,8 @@ fun ColorSpecSelector(viewModel: ThemeSettingsViewModel) {
     }
 
     DropDownMenuWidget(
-        icon = Icons.TwoTone.DesignServices,
-        title = stringResource(id = R.string.theme_settings_color_spec),
+        icon = icon,
+        title = title,
         description = descriptionText,
         enabled = isSpec2025Supported, // Disable interaction if not supported
         choice = availableSpecs.indexOf(activeSpec).coerceAtLeast(0),

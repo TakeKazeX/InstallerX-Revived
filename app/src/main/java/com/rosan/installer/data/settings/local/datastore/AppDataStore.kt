@@ -31,6 +31,8 @@ class AppDataStore(
         val UI_USE_MIUIX = booleanPreferencesKey("ui_use_miui_x")
         val UI_USE_MIUIX_MONET = booleanPreferencesKey("ui_use_miui_x_monet")
         val UI_USE_APPLE_FLOATING_BAR = booleanPreferencesKey("ui_use_apple_floating_bar")
+        val UI_ABOUT_USE_MIUIX = booleanPreferencesKey("ui_about_use_miuix")
+        val UI_INSTALL_USE_MIUIX = booleanPreferencesKey("ui_install_use_miuix")
         val UI_DYN_COLOR_FOLLOW_PKG_ICON = booleanPreferencesKey("ui_dyn_color_follow_pkg_icon")
         val LIVE_ACTIVITY_DYN_COLOR_FOLLOW_PKG_ICON = booleanPreferencesKey("live_activity_dyn_color_follow_pkg_icon")
 

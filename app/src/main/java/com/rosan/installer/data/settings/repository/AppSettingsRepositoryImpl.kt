@@ -60,6 +60,7 @@ class AppSettingsRepositoryImpl(
             appDataStore.getBoolean(AppDataStore.AUTO_LOCK_INSTALLER, false),
             appDataStore.getBoolean(AppDataStore.DIALOG_AUTO_SILENT_INSTALL, false),
             appDataStore.getBoolean(AppDataStore.UI_USE_MIUIX, false),
+            appDataStore.getBoolean(AppDataStore.UI_INSTALL_USE_MIUIX, false),
             appDataStore.getBoolean(AppDataStore.PREFER_SYSTEM_ICON_FOR_INSTALL, false),
             appDataStore.getBoolean(AppDataStore.SHOW_LAUNCHER_ICON, true),
 
@@ -90,6 +91,7 @@ class AppSettingsRepositoryImpl(
             appDataStore.getBoolean(AppDataStore.THEME_USE_DYNAMIC_COLOR, true),
             appDataStore.getBoolean(AppDataStore.UI_USE_MIUIX_MONET, false),
             appDataStore.getBoolean(AppDataStore.UI_USE_APPLE_FLOATING_BAR, false),
+            appDataStore.getBoolean(AppDataStore.UI_ABOUT_USE_MIUIX, false),
             appDataStore.getInt(AppDataStore.THEME_SEED_COLOR, PresetColors.first().color.toArgb()),
             appDataStore.getBoolean(AppDataStore.UI_DYN_COLOR_FOLLOW_PKG_ICON, false),
             appDataStore.getBoolean(AppDataStore.LIVE_ACTIVITY_DYN_COLOR_FOLLOW_PKG_ICON, false),
@@ -128,6 +130,7 @@ class AppSettingsRepositoryImpl(
             autoLockInstaller = values[idx++] as Boolean,
             autoSilentInstall = values[idx++] as Boolean,
             showMiuixUI = values[idx++] as Boolean,
+            useInstallMiuix = values[idx++] as Boolean,
             preferSystemIcon = values[idx++] as Boolean,
             showLauncherIcon = values[idx++] as Boolean,
 
@@ -154,6 +157,7 @@ class AppSettingsRepositoryImpl(
             useDynamicColor = values[idx++] as Boolean,
             useMiuixMonet = values[idx++] as Boolean,
             useAppleFloatingBar = values[idx++] as Boolean,
+            useAboutMiuix = values[idx++] as Boolean,
             seedColorInt = values[idx++] as Int,
             useDynColorFollowPkgIcon = values[idx++] as Boolean,
             useDynColorFollowPkgIconForLiveActivity = values[idx++] as Boolean,
@@ -234,6 +238,8 @@ class AppSettingsRepositoryImpl(
             BooleanSetting.UiUseMiuix -> AppDataStore.UI_USE_MIUIX
             BooleanSetting.UiUseMiuixMonet -> AppDataStore.UI_USE_MIUIX_MONET
             BooleanSetting.UiUseAppleFloatingBar -> AppDataStore.UI_USE_APPLE_FLOATING_BAR
+            BooleanSetting.UiAboutUseMiuix -> AppDataStore.UI_ABOUT_USE_MIUIX
+            BooleanSetting.UiInstallUseMiuix -> AppDataStore.UI_INSTALL_USE_MIUIX
             BooleanSetting.UiDynColorFollowPkgIcon -> AppDataStore.UI_DYN_COLOR_FOLLOW_PKG_ICON
             BooleanSetting.LiveActivityDynColorFollowPkgIcon -> AppDataStore.LIVE_ACTIVITY_DYN_COLOR_FOLLOW_PKG_ICON
             BooleanSetting.ShowLiveActivity -> AppDataStore.SHOW_LIVE_ACTIVITY

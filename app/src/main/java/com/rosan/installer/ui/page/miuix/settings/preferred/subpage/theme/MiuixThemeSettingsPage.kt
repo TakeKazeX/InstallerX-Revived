@@ -156,6 +156,20 @@ fun MiuixThemeSettingsPage(
                             viewModel.dispatch(ThemeSettingsAction.SetUseAppleFloatingBar(it))
                         }
                     )
+                    MiuixThemeEngineWidget(
+                        label = stringResource(R.string.theme_settings_about_style),
+                        currentThemeIsMiuix = uiState.useAboutMiuix,
+                        onThemeChange = { useAboutMiuix ->
+                            viewModel.dispatch(ThemeSettingsAction.SetUseAboutMiuix(useAboutMiuix))
+                        }
+                    )
+                    MiuixThemeEngineWidget(
+                        label = stringResource(R.string.theme_settings_install_style),
+                        currentThemeIsMiuix = uiState.useInstallMiuix,
+                        onThemeChange = { useInstallMiuix ->
+                            viewModel.dispatch(ThemeSettingsAction.SetUseInstallMiuix(useInstallMiuix))
+                        }
+                    )
                 }
             }
             item { SmallTitle(stringResource(R.string.theme_settings_miuix_ui)) }

@@ -321,7 +321,7 @@ class InstallerActivity : ComponentActivity(), KoinComponent {
 
             InstallerTheme(
                 isExpressive = uiState.isExpressive,
-                useMiuix = uiState.useMiuix,
+                useMiuix = uiState.useInstallMiuix,
                 themeMode = uiState.themeMode,
                 paletteStyle = uiState.paletteStyle,
                 colorSpec = uiState.colorSpec,
@@ -330,7 +330,7 @@ class InstallerActivity : ComponentActivity(), KoinComponent {
                 seedColor = uiState.seedColor
             ) {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    if (uiState.useMiuix) {
+                    if (uiState.useInstallMiuix) {
                         MiuixInstallerPage(session)
                     } else {
                         InstallerPage(session)
